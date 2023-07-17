@@ -1,10 +1,10 @@
 package com.unkownkoder.repository;
 
-import java.util.Optional;
+import com.unkownkoder.entity.ApplicationUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.unkownkoder.models.ApplicationUser;
+import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<ApplicationUser, Integer> {

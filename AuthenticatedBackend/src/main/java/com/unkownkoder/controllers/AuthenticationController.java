@@ -1,32 +1,30 @@
 package com.unkownkoder.controllers;
 
+import com.unkownkoder.entity.ApplicationUser;
+import com.unkownkoder.model.LoginResponseDTO;
+import com.unkownkoder.model.RegistrationDTO;
+import com.unkownkoder.services.impl.AuthenticationServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.unkownkoder.models.ApplicationUser;
-import com.unkownkoder.models.LoginResponseDTO;
-import com.unkownkoder.models.RegistrationDTO;
-import com.unkownkoder.services.AuthenticationService;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/v1/auth")
 @CrossOrigin("*")
 public class AuthenticationController {
 
-    @Autowired
-    private AuthenticationService authenticationService;
+    private final AuthenticationServiceImpl authenticationServiceImpl;
+
+    public AuthenticationController(AuthenticationServiceImpl authenticationServiceImpl) {
+        this.authenticationServiceImpl = authenticationServiceImpl;
+    }
 
     @PostMapping("/register")
     public ApplicationUser registerUser(@RequestBody RegistrationDTO body){
-        return authenticationService.registerUser(body.getUsername(), body.getPassword());
+        return authenticationServiceImpl.registerUser(body.getUsername(), body.getPassword());
     }
     
     @PostMapping("/login")
     public LoginResponseDTO loginUser(@RequestBody RegistrationDTO body){
-        return authenticationService.loginUser(body.getUsername(), body.getPassword());
+        return authenticationServiceImpl.loginUser(body.getUsername(), body.getPassword());
     }
 }   

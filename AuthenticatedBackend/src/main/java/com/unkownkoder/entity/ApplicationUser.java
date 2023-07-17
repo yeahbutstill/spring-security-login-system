@@ -1,32 +1,36 @@
-package com.unkownkoder.models;
+package com.unkownkoder.entity;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.Table;
+import java.util.Collection;
+import java.util.Objects;
+import java.util.Set;
 
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
 @Entity
 @Table(name="users")
-public class ApplicationUser implements UserDetails{
+public class ApplicationUser implements UserDetails {
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Integer userId;
+
 	@Column(unique=true)
+	@NotBlank
+	@NotEmpty
     private String username;
+
+	@NotBlank
+	@NotEmpty
     private String password;
 
     @ManyToMany(fetch=FetchType.EAGER)
@@ -37,31 +41,6 @@ public class ApplicationUser implements UserDetails{
     )
     private Set<Role> authorities;
 
-    public ApplicationUser() {
-		super();
-		authorities = new HashSet<>();
-	}
-	
-
-	public ApplicationUser(Integer userId, String username, String password, Set<Role> authorities) {
-		super();
-		this.userId = userId;
-		this.username = username;
-		this.password = password;
-		this.authorities = authorities;
-	}
-
-    public Integer getUserId() {
-		return this.userId;
-	}
-	
-	public void setId(Integer userId) {
-		this.userId = userId;
-	}
-	
-	public void setAuthorities(Set<Role> authorities) {
-		this.authorities = authorities;
-	}
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -75,18 +54,10 @@ public class ApplicationUser implements UserDetails{
 		return this.password;
 	}
 	
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
 	@Override
 	public String getUsername() {
 		// TODO Auto-generated method stub
 		return this.username;
-	}
-	
-	public void setUsername(String username) {
-		this.username = username;
 	}
 	
 	/* If you want account locking capabilities create variables and ways to set them for the methods below */
@@ -113,5 +84,26 @@ public class ApplicationUser implements UserDetails{
 		// TODO Auto-generated method stub
 		return true;
 	}
-    
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof ApplicationUser that)) return false;
+
+		if (!Objects.equals(userId, that.userId)) return false;
+		if (getUsername() != null ? !getUsername().equals(that.getUsername()) : that.getUsername() != null)
+			return false;
+		if (getPassword() != null ? !getPassword().equals(that.getPassword()) : that.getPassword() != null)
+			return false;
+		return getAuthorities() != null ? getAuthorities().equals(that.getAuthorities()) : that.getAuthorities() == null;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = userId != null ? userId.hashCode() : 0;
+		result = 31 * result + (getUsername() != null ? getUsername().hashCode() : 0);
+		result = 31 * result + (getPassword() != null ? getPassword().hashCode() : 0);
+		result = 31 * result + (getAuthorities() != null ? getAuthorities().hashCode() : 0);
+		return result;
+	}
 }
